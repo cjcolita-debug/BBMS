@@ -1,0 +1,142 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true;
+    }
+
+    function bookPath(bookId) {
+      return /databases/$(database)/documents/books/$(bookId);
+    }
+
+    function borrowerPath(borrowerId) {
+      return /databases/$(database)/documents/borrowers/$(borrowerId);
+    }
+
+    function validBook(data) {
+      return data.keys().hasOnly([
+          'title',
+          'author',
+          'isbn',
+          'category',
+          'quantity',
+          'available_quantity',
+          'description',
+          'created_at'
+        ])
+        && data.title is string
+        && data.author is string
+        && data.isbn is string
+        && data.category is string
+        && data.quantity is int
+        && data.quantity >= 0
+        && data.available_quantity is int
+        && data.available_quantity >= 0
+        && data.available_quantity <= data.quantity
+        && data.description is string
+        && data.created_at is string;
+    }
+
+    function validBorrower(data) {
+      return data.keys().hasOnly([
+          'full_name',
+          'student_id',
+          'course',
+          'year_level',
+          'contact_number',
+          'created_at'
+        ])
+        && data.full_name is string
+        && data.student_id is string
+        && data.course is string
+        && data.year_level is string
+        && data.contact_number is string
+        && data.created_at is string;
+    }
+
+    function validNewBorrowing(data) {
+      return data.keys().hasOnly([
+          'borrower_id',
+          'book_id',
+          'borrowed_at',
+          'due_date',
+          'returned_at',
+          'actual_return_date',
+          'status',
+          'books',
+          'borrowers'
+        ])
+        && data.borrower_id is string
+        && data.book_id is string
+        && data.borrowed_at is string
+        && data.due_date is string
+        && data.returned_at == null
+        && data.actual_return_date == null
+        && data.status == 'borrowed'
+        && data.books is map
+        && data.books.id == data.book_id
+        && data.borrowers is map
+        && data.borrowers.id == data.borrower_id
+        && exists(bookPath(data.book_id))
+        && exists(borrowerPath(data.borrower_id))
+        && getAfter(bookPath(data.book_id)).data.available_quantity
+          == get(bookPath(data.book_id)).data.available_quantity - 1;
+    }
+
+    function validBorrowingReturn(data) {
+      return resource.data.returned_at == null
+        && data.returned_at is string
+        && data.actual_return_date == data.returned_at
+        && data.status in ['returned', 'overdue']
+        && data.diff(resource.data).affectedKeys().hasOnly([
+          'returned_at',
+          'actual_return_date',
+          'status'
+        ])
+        && exists(bookPath(data.book_id))
+        && getAfter(bookPath(data.book_id)).data.available_quantity
+          == get(bookPath(data.book_id)).data.available_quantity + 1
+        && getAfter(bookPath(data.book_id)).data.available_quantity
+          <= getAfter(bookPath(data.book_id)).data.quantity;
+    }
+
+    match /admins/{userId} {
+      allow get: if signedIn() && request.auth.uid == userId;
+      allow list, create, update, delete: if false;
+    }
+
+    match /books/{bookId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin() && validBook(request.resource.data);
+      allow delete: if isAdmin()
+        && resource.data.available_quantity == resource.data.quantity;
+    }
+
+    match /borrowers/{borrowerId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin() && validBorrower(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /book_isbn_index/{indexId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /borrower_student_id_index/{indexId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /borrowing_transactions/{transactionId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && validNewBorrowing(request.resource.data);
+      allow update: if isAdmin() && validBorrowingReturn(request.resource.data);
+      allow delete: if false;
+    }
+  }
+}
