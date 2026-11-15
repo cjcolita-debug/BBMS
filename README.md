@@ -274,7 +274,7 @@ The `npm test` command runs `npm run test:firestore`, which starts the Firestore
 
 ## Author
 
-**Cris Feljhon Colita**
+**Crisfel Jhon Colita**
 
 ---
 
