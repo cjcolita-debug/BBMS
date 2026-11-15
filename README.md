@@ -4,113 +4,118 @@
 
 ### Book Borrowing Management System
 
-**A streamlined workspace for managing a library catalog, borrowers, and book circulation.**
+An intuitive library operations workspace for organizing books, borrowers, and borrowing activity.
 
-[![SvelteKit](https://img.shields.io/badge/SvelteKit-FF3E00?style=flat-square&logo=svelte&logoColor=white)](https://kit.svelte.dev/)
-[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=111827)](https://firebase.google.com/)
-[![Vercel](https://img.shields.io/badge/Deployed%20with-Vercel-111827?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
-[![Node.js](https://img.shields.io/badge/Node.js-22-2563EB?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![SvelteKit](https://img.shields.io/badge/SvelteKit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)](https://kit.svelte.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=111827)](https://firebase.google.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-142B4A?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+[![Node.js 22](https://img.shields.io/badge/Node.js-22-2563EB?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 
 <br />
 
-[![LIVE DEMO — replace with production URL](https://img.shields.io/badge/LIVE_DEMO-Replace_with_production_URL-2563EB?style=for-the-badge&logo=vercel&logoColor=white)](https://bbms-one.vercel.app/)
+<a href="https://bbms-one.vercel.app/">
+  <img src="https://img.shields.io/badge/%F0%9F%9A%80%20VISIT%20LIVE%20WEBSITE-2563EB?style=for-the-badge&logo=vercel&logoColor=white" alt="🚀 VISIT LIVE WEBSITE" />
+</a>
 
-> **Live site:** The repository contains Vercel project-link metadata, but no production hostname. Replace the placeholder URL above with the deployed domain when available.
+<br />
+
+**Production:** [bbms-one.vercel.app](https://bbms-one.vercel.app/)
 
 </div>
 
 ---
 
-## Project Overview
-
-BBMS brings the day-to-day essentials of book circulation into one place. Library staff can maintain a searchable catalog, keep borrower records, and track each book from checkout through return. The dashboard provides a quick view of collection availability and recent activity.
-
-The application is built with **SvelteKit** and **TypeScript**, with **Cloud Firestore** as its data store. Its Firestore rules validate admin access and protect inventory and transaction updates.
-
-> **Current authentication note:** The current landing page redirects directly to the dashboard; it does not display a sign-in form. Firestore rules still require a Firebase-authenticated user whose `admins/{uid}` document has `active: true`. Database operations will be denied unless an authorized session is available. Set up or restore an authentication flow before using this app with real data.
-
 ## Table of Contents
 
+- [Live Website](#live-website)
+- [Project Overview](#project-overview)
 - [Features](#features)
-- [Technologies Used](#technologies-used)
+- [Technologies](#technologies)
 - [Screenshots](#screenshots)
-- [Installation Guide](#installation-guide)
-- [How to Run Locally](#how-to-run-locally)
+- [Getting Started](#getting-started)
 - [Firebase Configuration](#firebase-configuration)
-- [Verification Checklist](#verification-checklist)
-- [Vercel Deployment](#vercel-deployment)
 - [Project Structure](#project-structure)
+- [Deployment to Vercel](#deployment-to-vercel)
+- [Checks and Tests](#checks-and-tests)
 - [Author](#author)
 
 ---
 
+## Live Website
+
+| | |
+| --- | --- |
+| **Website** | BBMS |
+| **Production URL** | [https://bbms-one.vercel.app/](https://bbms-one.vercel.app/) |
+| **Hosting platform** | [Vercel](https://vercel.com/) |
+| **Live demo** | [🚀 Visit the BBMS website](https://bbms-one.vercel.app/) |
+
+## Project Overview
+
+BBMS is a browser-based system for managing common library circulation tasks. It brings the book catalog, borrower records, and borrowing transactions into one workspace. Staff can check availability, record due dates and returns, and review recent activity from the dashboard.
+
+The application is built with SvelteKit and TypeScript. Firebase Cloud Firestore stores the library records, and Firestore rules restrict access to signed-in users listed as active administrators.
+
+> **Authentication status:** Firebase sign-in logic and admin access rules exist in the source, but authentication is currently disabled in the application UI and there is no sign-in page. The Firestore rules still require an authenticated active admin. Configure an appropriate sign-in flow before connecting the app to real library data.
+
 ## Features
 
-| Area | What you can do |
+| Area | Implemented capabilities |
 | --- | --- |
-| **📊 Dashboard** | Review total, available, and borrowed book counts; see pending returns and recent borrowing activity. |
-| **📚 Book catalog** | Add, edit, delete, and search books by title, author, ISBN, or category. Track total and available quantities. |
-| **👥 Borrowers** | Add, edit, delete, and search borrower records, including student ID and contact details. |
-| **🔄 Circulation** | Record a borrowing with a due date, then mark the book returned. Inventory is adjusted as part of the Firestore transaction. |
-| **⏰ Status tracking** | View borrowed, returned, and overdue transactions; overdue status is calculated from the due date. |
-| **🛡️ Data validation** | Prevent duplicate ISBNs and student IDs, invalid inventory values, and deleting books with outstanding copies. |
-| **🔐 Firestore rules** | Restrict reads and writes to authenticated admins with an active allow-list document; enforce valid data and circulation updates. |
+| **📊 Dashboard** | View catalog record count, available and borrowed copy totals, unreturned loans, borrower count, and up to five recent transactions. |
+| **📚 Book catalog** | Add, edit, delete, and search books by title, author, ISBN, or category. Track total and available quantities. Deletion is blocked while copies are on loan. |
+| **👥 Borrowers** | Add, edit, delete, and search borrower records by name, student ID, course, or contact number. |
+| **🔄 Circulation** | Record a borrowing with a due date, then mark the book returned. Book inventory and transaction records are updated atomically in Firestore. |
+| **⏰ Loan statuses** | Review borrowed, returned, and overdue records. Unreturned loans become overdue based on their due date. |
+| **🛡️ Data safeguards** | Validate required fields and inventory quantities, prevent duplicate ISBNs and student IDs, and protect Firestore collections with admin-only rules. |
 
----
-
-## Technologies Used
+## Technologies
 
 <div align="center">
 
 [![SvelteKit](https://img.shields.io/badge/SvelteKit-FF3E00?style=flat-square&logo=svelte&logoColor=white)](https://kit.svelte.dev/)
 [![Svelte](https://img.shields.io/badge/Svelte-FF3E00?style=flat-square&logo=svelte&logoColor=white)](https://svelte.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=111827)](https://firebase.google.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-111827?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-142B4A?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-22-2563EB?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 
 </div>
 
-| Technology | Role in BBMS |
+| Technology | Role |
 | --- | --- |
-| SvelteKit and Svelte | Application framework and UI |
-| TypeScript | Typed application code |
-| Tailwind CSS | Utility-first styling |
-| Firebase Authentication | Authentication integration used by the app and Firestore rules |
-| Cloud Firestore | Persistent book, borrower, index, and transaction data |
-| Vite | Development server and build tooling |
-| Vercel adapter | SvelteKit deployment target |
-| Node.js 22 and npm | Runtime and package management |
-| Firebase CLI and Firestore Emulator | Firestore rules tests and rules deployment |
-
----
+| **SvelteKit & Svelte 5** | Application framework and reactive user interface |
+| **TypeScript** | Typed application code |
+| **Tailwind CSS** | Utility-first styling |
+| **Firebase Authentication** | Authentication integration in the source; currently disabled in the UI |
+| **Cloud Firestore** | Persistent catalog, borrower, and transaction data with security rules |
+| **Vite** | Development server and build tooling |
+| **Vercel adapter** | SvelteKit deployment on Vercel with the Node.js 22 runtime |
+| **Node.js 22 & npm** | Supported runtime and package management |
 
 ## Screenshots
 
-There are no application screenshots checked into this repository yet. Add genuine captures here when available; no placeholder or generated application imagery is used.
+There are no application screenshots checked into the repository yet. This section is intentionally kept free of placeholder images so the README does not display misleading or broken screenshots.
 
-| Dashboard | Books | Borrowing transactions |
-| --- | --- | --- |
-| _Screenshot coming soon_ | _Screenshot coming soon_ | _Screenshot coming soon_ |
-
----
-
-## Installation Guide
+## Getting Started
 
 ### Prerequisites
 
 - [Node.js 22.x](https://nodejs.org/) and npm
 - A Firebase project with a registered Web app and Cloud Firestore database
-- Firebase CLI access if you plan to deploy Firestore rules or run emulator tests
+- Firebase CLI access if you plan to deploy Firestore rules or run the Firestore Emulator tests
 
-### 1. Get the project
+### 1. Clone the repository
+
+Use your repository's Git clone URL:
 
 ```bash
-git clone <your-repository-url>
+git clone <repository-url> BBMS
 cd BBMS
 ```
 
-Replace `<your-repository-url>` with the clone URL for your repository.
+Replace `<repository-url>` with the clone URL for your GitHub repository.
 
 ### 2. Install dependencies
 
@@ -120,123 +125,72 @@ npm install
 
 ### 3. Configure Firebase
 
-Copy the example environment file and add the Firebase Web app configuration values:
+Create a local environment file from the checked-in example:
 
 ```bash
 cp .env.example .env
 ```
 
-See [Firebase Configuration](#firebase-configuration) for the required variable names and security notes.
+Add your Firebase Web app configuration values to `.env`. See [Firebase Configuration](#firebase-configuration) for the variable list and access requirements.
 
----
-
-## How to Run Locally
-
-Start the Vite development server:
+### 4. Start the development server
 
 ```bash
 npm run dev
 ```
 
-Open the local URL printed by Vite (typically `http://localhost:5173`).
+Open the local URL printed by Vite (typically [http://localhost:5173](http://localhost:5173)).
 
-### Check, test, and build
+### 5. Build for production
 
 ```bash
-npm run check
-npm run test:firestore
 npm run build
 ```
 
-`npm run test:firestore` starts the Firestore Emulator using the demo project ID and runs the Node.js test files in `tests/`. It does not target your configured Firebase project.
-
----
+To serve the production build locally, run `npm run preview`.
 
 ## Firebase Configuration
 
-BBMS initializes **Firebase Authentication** and **Cloud Firestore** in the browser. Firestore stores the `books`, `borrowers`, and `borrowing_transactions` collections, along with `book_isbn_index` and `borrower_student_id_index` documents used to enforce uniqueness.
+BBMS uses **Cloud Firestore** for the `books`, `borrowers`, and `borrowing_transactions` collections. It also uses `book_isbn_index` and `borrower_student_id_index` documents to prevent duplicate ISBNs and student IDs. **Firebase Authentication** is included in the application code; authentication is currently disabled in the UI. Firebase Storage is not used by the current application.
 
-Borrowing records include book and borrower snapshots so transaction details remain available if a related catalog record is deleted. Borrow and return operations update inventory and transaction data atomically through Firestore transactions. A book with copies currently on loan cannot be deleted.
+Set these variables in the root `.env` file for local development and in the Vercel project's environment settings for deployments:
 
-Set these variables in the root `.env` file for local development. Add the same variables to the Vercel project environment for deployed builds:
-
-| Variable | Value |
+| Variable | Firebase Web app value |
 | --- | --- |
-| `PUBLIC_FIREBASE_API_KEY` | Firebase Web API key |
-| `PUBLIC_FIREBASE_AUTH_DOMAIN` | Web app auth domain |
-| `PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID |
-| `PUBLIC_FIREBASE_STORAGE_BUCKET` | Web app storage bucket |
-| `PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Web app messaging sender ID |
-| `PUBLIC_FIREBASE_APP_ID` | Firebase Web app ID |
+| `PUBLIC_FIREBASE_API_KEY` | API key |
+| `PUBLIC_FIREBASE_AUTH_DOMAIN` | Auth domain |
+| `PUBLIC_FIREBASE_PROJECT_ID` | Project ID |
+| `PUBLIC_FIREBASE_STORAGE_BUCKET` | Storage bucket configuration value |
+| `PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Messaging sender ID |
+| `PUBLIC_FIREBASE_APP_ID` | App ID |
 
-Example format:
+Use the values shown in **Firebase Console → Project settings → Your apps**. The `.env.example` file shows the expected format. These `PUBLIC_` values are client-side Firebase configuration, not authorization secrets. Never put a service-account key, private credential, or server secret in the application or in a `PUBLIC_` variable.
 
-```env
-PUBLIC_FIREBASE_API_KEY="your-firebase-web-api-key"
-PUBLIC_FIREBASE_AUTH_DOMAIN="your-project-id.firebaseapp.com"
-PUBLIC_FIREBASE_PROJECT_ID="your-project-id"
-PUBLIC_FIREBASE_STORAGE_BUCKET="your-project-id.firebasestorage.app"
-PUBLIC_FIREBASE_MESSAGING_SENDER_ID="your-messaging-sender-id"
-PUBLIC_FIREBASE_APP_ID="your-firebase-web-app-id"
-```
+### Firestore access
 
-Use the exact values from **Firebase Console → Project settings → Your apps**. These `PUBLIC_` values are client-side Firebase configuration, not authorization secrets. **Never add a Firebase service-account key or other server credential to this client application or to a `PUBLIC_` variable.**
+The rules in [`firestore.rules`](./firestore.rules) require a signed-in Firebase user whose `admins/{uid}` document has the Boolean field `active` set to `true`. Admin documents cannot be created or changed by the application; provision them through a trusted administrative process.
 
-### Firestore access setup
+1. Register a Firebase Web app and create a Cloud Firestore database in production mode.
+2. Create and enable an authentication method in Firebase Console if you have configured a sign-in flow.
+3. Create an authorized Firebase Authentication user and note the user's UID.
+4. Create an `admins` Firestore document with that UID as its document ID and `active` set to the Boolean `true`.
+5. Deploy the Firestore rules before connecting the application to that database.
 
-The repository's [Firestore rules](./firestore.rules) require a signed-in Firebase user and an `admins/{uid}` document with the Boolean field `active` set to `true`. Admin documents cannot be created or edited through the app; provision them through a trusted administrative process.
-
-For a Firebase project:
-
-1. Register a Web app in Firebase Console and create a Cloud Firestore database in **production mode**.
-2. Enable **Email/Password** in **Authentication → Sign-in method** if that is the authentication method you configure.
-3. Create an authorized Firebase Authentication user, then copy their UID.
-4. In Firestore, create an `admins` document whose document ID is that UID and whose `active` field is the Boolean `true`.
-5. Deploy this repository's rules before using the database.
-
-Deploy the rules with Firebase CLI:
+Deploy rules with the Firebase CLI:
 
 ```bash
 firebase deploy --only firestore:rules --project <FIREBASE_PROJECT_ID>
 ```
 
-The current UI does not provide sign-in, even though Firebase Authentication integration and admin-protected rules remain in the project. Without an authorized Firebase session, Firestore requests will fail. Configure or restore a suitable sign-in flow before connecting production data.
-
-The repository does not migrate Supabase data or accounts to Firebase. Any existing Supabase projects, data, and accounts are separate and are not changed by these instructions; Firebase users need their own Firebase accounts.
-
-## Verification Checklist
-
-After Firebase, Firestore rules, and an authorized session are configured:
-
-1. Confirm Firestore requests are denied without an authenticated active admin.
-2. Add, edit, search, and delete a book and a borrower.
-3. Borrow a book and verify available quantity decreases and the transaction is recorded.
-4. Try to borrow the last copy more than once and confirm available inventory never drops below zero.
-5. Return the transaction and confirm inventory is restored once; verify a second return is rejected.
-6. Confirm a book with outstanding loans cannot be deleted and transaction snapshots remain available if related records are removed.
-
----
-
-## Vercel Deployment
-
-The project uses `@sveltejs/adapter-vercel` with the Node.js 22 runtime.
-
-1. Push the repository to GitHub.
-2. In [Vercel](https://vercel.com/), choose **Add New → Project** and import the repository.
-3. Add all six `PUBLIC_FIREBASE_*` variables in **Project Settings → Environment Variables** for the environments you intend to deploy.
-4. Confirm the Firebase project and Firestore rules are configured, and that an authorized sign-in flow is available before using real data.
-5. Deploy. Vercel builds the project using its configured SvelteKit adapter.
-6. Add the resulting production hostname to the **LIVE DEMO** button at the top of this README.
-
-> **Production URL:** Not present in the repository's deployment metadata. Replace the live-demo placeholder with the actual Vercel production URL once confirmed in the Vercel project dashboard.
-
----
+The current UI does not provide sign-in, so Firestore requests will be rejected unless a valid authorized session is supplied. Add or restore a suitable sign-in flow before using real data.
 
 ## Project Structure
 
 ```text
 .
 ├── .env.example
+├── .gitignore
+├── .npmrc
 ├── firebase.json
 ├── firestore.rules
 ├── package.json
@@ -289,7 +243,34 @@ The project uses `@sveltejs/adapter-vercel` with the Node.js 22 runtime.
 └── vite.config.ts
 ```
 
----
+## Deployment to Vercel
+
+The project is configured with `@sveltejs/adapter-vercel` and the Node.js 22 runtime.
+
+1. Push the repository to GitHub.
+2. In [Vercel](https://vercel.com/), select **Add New → Project** and import the repository.
+3. Add all six `PUBLIC_FIREBASE_*` variables in **Project Settings → Environment Variables** for each environment you plan to deploy.
+4. Confirm the Firebase project and Firestore rules are configured. Add a suitable sign-in flow before using the live app with real data.
+5. Deploy. Vercel will build the SvelteKit application using its configured adapter.
+6. To update the production website, push a commit to the connected GitHub branch; Vercel will create a deployment from the updated source.
+
+**Official production website:** [https://bbms-one.vercel.app/](https://bbms-one.vercel.app/)
+
+## Checks and Tests
+
+Run the TypeScript and Svelte checks:
+
+```bash
+npm run check
+```
+
+Run the Firestore rules and sample catalog tests in the Firebase Emulator:
+
+```bash
+npm test
+```
+
+The `npm test` command runs `npm run test:firestore`, which starts the Firestore Emulator with the demo project ID `demo-bbms` and executes the tests in `tests/`. It does not use or modify your configured Firebase project.
 
 ## Author
 
@@ -299,8 +280,10 @@ The project uses `@sveltejs/adapter-vercel` with the Node.js 22 runtime.
 
 <div align="center">
 
-Built for clearer catalog management and smoother book circulation.
+**BBMS — Book Borrowing Management System**
 
-<a href="#bbms">↑ Back to Top</a>
+Built to make library catalog management and book circulation easier to follow.
+
+[↑ Back to Top](#bbms) · [Visit the live website](https://bbms-one.vercel.app/)
 
 </div>
